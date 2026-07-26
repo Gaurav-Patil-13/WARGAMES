@@ -1,0 +1,29 @@
+services:
+  backend:
+    build: ./backend
+    container_name: wargames-backend
+    ports:
+      - "4000:4000"
+    environment:
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-me}
+      PORT: 4000
+      CLIENT_URL: http://localhost:5173
+      DATABASE_FILE: /app/data/wargames.db
+      DOCKER_SOCKET: /var/run/docker.sock
+      CHALLENGES_DIR: /app/challenges
+    volumes:
+      - ./backend/data:/app/data
+      - ./challenges:/app/challenges:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: wargames-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:4000
+    depends_on:
+      - backend
+    restart: unless-stopped

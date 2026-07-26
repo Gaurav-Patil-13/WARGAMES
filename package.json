@@ -1,0 +1,11 @@
+{
+  "name": "wargames-platform",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "docker compose up --build",
+    "backend": "npm --prefix backend run dev",
+    "frontend": "npm --prefix frontend run dev",
+    "seed": "npm --prefix backend run seed"
+  }
+}
