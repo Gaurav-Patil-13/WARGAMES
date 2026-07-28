@@ -15,7 +15,16 @@ export default function Challenge() {
   const [message, setMessage] = useState('');
   const [starting, setStarting] = useState(false);
 
+
   useEffect(() => {
+  return () => {
+    if (containerId) {
+      api.delete(`/containers/${containerId}`).catch(() => {});
+    }
+  };
+}, [containerId]);
+
+    useEffect(() => {
     api.get(`/levels/${id}`).then((res) => setLevel(res.data.level)).catch(() => navigate('/dashboard'));
     return () => {
       if (containerId) api.delete(`/containers/${containerId}`).catch(() => {});
