@@ -1,26 +1,117 @@
-# WARGAMES
+![React](https://img.shields.io/badge/React-19-blue?logo=react)
+![Node.js](https://img.shields.io/badge/Node.js-Express-green?logo=node.js)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-blue?logo=postgresql)
+![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker)
+![AWS](https://img.shields.io/badge/AWS-EC2-orange?logo=amazon-aws)
+![Vercel](https://img.shields.io/badge/Vercel-Deployed-black?logo=vercel)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-WARGAMES is a browser-based CTF learning platform for Linux, Bash, Docker, and basic cybersecurity. Players register, solve levels in order, start isolated Docker challenge containers, use a live terminal in the web UI, submit flags, and unlock the next level.
+# 🛡️ WARGAMES - Browser-Based CTF Learning Platform
 
-## Architecture
+A browser-based **Capture The Flag (CTF)** learning platform that helps users learn **Linux, Bash, Docker, Networking, and basic Cybersecurity** through hands-on interactive challenges.
 
-- **Frontend:** React, Vite, TailwindCSS, Framer Motion, xterm.js
-- **Backend:** Node.js, Express, Socket.IO, Dockerode
-- **Database:** SQLite
-- **Runtime isolation:** Docker challenge containers built from `challenges/level-*`
+Users can launch isolated Docker-based challenge environments, interact with a real Linux terminal directly in the browser, submit flags, earn XP, and progressively unlock new levels.
 
-Flow:
+---
 
-1. User logs in and receives a JWT.
-2. Dashboard fetches levels and progress from SQLite.
-3. Starting a level asks the backend to build the level image if missing and create a Docker container.
-4. The challenge page opens a Socket.IO connection.
-5. xterm.js sends keystrokes to the backend.
-6. Backend attaches to `/bin/bash -l` inside the container using Dockerode exec.
-7. User submits `WG{...}` to the REST API.
-8. Backend validates the flag, records attempts, grants XP, and unlocks the next level.
+## 🚀 Features
 
-## Folder Structure
+- 🔐 JWT-based User Authentication
+- 🐳 Docker-based isolated challenge containers
+- 💻 Interactive Linux terminal using **xterm.js**
+- ⚡ Real-time communication using **Socket.IO**
+- 🎯 Progressive level unlocking system
+- 🏆 XP and progress tracking
+- 🚩 Automatic flag validation
+- 📱 Responsive UI with Tailwind CSS
+- ☁️ Production deployment on AWS EC2
+- 🔒 HTTPS enabled using Nginx & Let's Encrypt
+- 🗄️ Cloud-hosted PostgreSQL database using Neon
+
+---
+
+# 📸 Screenshots
+
+> Add screenshots here
+
+| Login | Dashboard |
+|-------|-----------|
+| ![](screenshots/login.png) | ![](screenshots/dashboard.png) |
+
+| Challenge Terminal |
+|--------------------|
+| ![](screenshots/terminal.png) |
+
+---
+
+# 🏗️ System Architecture
+
+```text
+                    User
+                      │
+                      ▼
+          React + Vite Frontend
+              (Hosted on Vercel)
+                      │
+                 HTTPS Request
+                      │
+                      ▼
+      Nginx Reverse Proxy (AWS EC2)
+                      │
+                      ▼
+         Express.js Backend (Docker)
+                      │
+      ┌───────────────┴───────────────┐
+      │                               │
+      ▼                               ▼
+ Neon PostgreSQL            Docker Challenge Containers
+      │
+      ▼
+ User Progress & Levels
+```
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+
+- React.js
+- Vite
+- Tailwind CSS
+- Framer Motion
+- Axios
+- xterm.js
+- Socket.IO Client
+
+## Backend
+
+- Node.js
+- Express.js
+- Socket.IO
+- Dockerode
+- JWT Authentication
+- bcrypt
+- PostgreSQL (`pg`)
+
+## Database
+
+- Neon PostgreSQL
+
+## DevOps
+
+- Docker
+- Docker Compose
+- AWS EC2
+- Nginx
+- Let's Encrypt
+- DuckDNS
+- Vercel
+- GitHub
+
+---
+
+# 📂 Project Structure
 
 ```text
 .
@@ -28,117 +119,268 @@ Flow:
 │   ├── Dockerfile
 │   ├── package.json
 │   └── src
-│       ├── config/env.js
-│       ├── data/levels.js
-│       ├── db.js
-│       ├── middleware/auth.js
+│       ├── config
+│       ├── middleware
 │       ├── routes
 │       ├── services
-│       ├── sockets/terminal.js
+│       ├── sockets
+│       ├── db.js
 │       └── server.js
+│
 ├── frontend
 │   ├── Dockerfile
 │   ├── package.json
 │   └── src
 │       ├── components
 │       ├── pages
+│       ├── hooks
 │       └── utils
+│
 ├── challenges
 │   ├── level-01
 │   ├── level-02
+│   ├── level-03
 │   └── ...
+│
 ├── docker-compose.yml
 └── README.md
 ```
 
-## Levels
+---
 
-| Level | Topic | Flag |
-| --- | --- | --- |
-| 1 | Basic navigation | `WG{linux_navigation_unlocked}` |
-| 2 | Hidden files | `WG{dotfiles_are_not_invisible}` |
-| 3 | File permissions | `WG{permissions_tell_the_story}` |
-| 4 | Grep/find | `WG{grep_found_the_signal}` |
-| 5 | Log analysis | `WG{logs_remember_everything}` |
-| 6 | Bash pipeline | `WG{bash_pipelines_build_answers}` |
-| 7 | Cronjob trail | `WG{cron_jobs_leave_clues}` |
-| 8 | Container inspection | `WG{inspect_before_you_assume}` |
-| 9 | Environment variables | `WG{env_vars_can_leak_secrets}` |
-| 10 | Port/service discovery | `WG{services_speak_on_ports}` |
+# 🎮 Challenge Flow
 
-## Quick Start
+### 1️⃣ User Authentication
 
-Prerequisites:
+- Register/Login
+- JWT token generated
+- Protected routes
 
-- Docker Engine
-- Docker Compose plugin
-- Node.js 20 only if running outside Docker Compose
+---
 
-Run the platform:
+### 2️⃣ Dashboard
+
+- Fetch available levels
+- Track completed levels
+- Display XP and progress
+
+---
+
+### 3️⃣ Start Challenge
+
+When the user starts a level:
+
+- Backend checks Docker image
+- Builds image if missing
+- Creates isolated container
+- Returns container details
+
+---
+
+### 4️⃣ Interactive Terminal
+
+- Browser opens xterm.js
+- Socket.IO establishes connection
+- Dockerode attaches to `/bin/bash`
+- User executes Linux commands
+
+---
+
+### 5️⃣ Flag Submission
+
+- User submits the flag
+- Backend validates it
+- Progress is stored
+- XP is awarded
+- Next level unlocks
+
+---
+
+# 📚 Challenge Levels
+
+| Level | Topic |
+|--------|--------------------------|
+| 1 | Linux Navigation |
+| 2 | Hidden Files |
+| 3 | File Permissions |
+| 4 | grep & find |
+| 5 | Log Analysis |
+| 6 | Bash Pipelines |
+| 7 | Cron Jobs |
+| 8 | Docker Inspection |
+| 9 | Environment Variables |
+| 10 | Port & Service Discovery |
+
+---
+
+# ⚙️ Installation
+
+## Clone Repository
 
 ```bash
-cp .env.example .env
+git clone https://github.com/<your-username>/WARGAMES.git
+cd WARGAMES
+```
+
+---
+
+## Backend Setup
+
+```bash
+cd backend
+npm install
+```
+
+Create `.env`
+
+```env
+PORT=4000
+
+JWT_SECRET=your-secret
+
+DATABASE_URL=postgresql://username:password@host/database?sslmode=require
+
+CLIENT_URL=http://localhost:5173
+
+DOCKER_SOCKET=/var/run/docker.sock
+```
+
+Run backend
+
+```bash
+npm run dev
+```
+
+---
+
+## Frontend Setup
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+## Docker Setup
+
+```bash
 docker compose up --build
 ```
 
-Open:
+Frontend
 
-- Frontend: `http://localhost:5173`
-- Backend health: `http://localhost:4000/health`
-
-Create an account from the login page. Level 1 is unlocked by default.
-
-## Local Development Without Compose
-
-Install backend dependencies:
-
-```bash
-npm --prefix backend install
-npm --prefix backend run dev
+```
+http://localhost:5173
 ```
 
-Install frontend dependencies:
+Backend
 
-```bash
-npm --prefix frontend install
-npm --prefix frontend run dev
+```
+http://localhost:4000
 ```
 
-The backend needs access to Docker:
+---
 
-```bash
-DOCKER_SOCKET=/var/run/docker.sock \
-CHALLENGES_DIR=/home/rugved0014/Documents/Wargames/challenges \
-DATABASE_FILE=/home/rugved0014/Documents/Wargames/backend/data/wargames.db \
-npm --prefix backend run dev
+# 🌐 API Endpoints
+
+## Authentication
+
+```http
+POST /api/auth/register
+POST /api/auth/login
+GET  /api/auth/me
 ```
 
-## API Summary
+## Levels
 
-Auth:
+```http
+GET /api/levels
+GET /api/levels/:id
+POST /api/levels/:id/submit
+```
 
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `GET /api/auth/me`
+## Containers
 
-Levels:
+```http
+POST /api/containers/levels/:id/start
+DELETE /api/containers/:dockerId
+```
 
-- `GET /api/levels`
-- `GET /api/levels/:id`
-- `POST /api/levels/:id/submit`
+## Health Check
 
-Containers:
+```http
+GET /health
+```
 
-- `POST /api/containers/levels/:id/start`
-- `DELETE /api/containers/:dockerId`
+---
 
-Socket.IO terminal events:
+# 🔌 Socket.IO Events
 
-- Client emits `terminal:start` with `{ containerId }`
-- Client emits `terminal:input` with raw terminal input
-- Server emits `terminal:data`
-- Server emits `terminal:error`
+### Client
 
-## Notes
+```
+terminal:start
+terminal:input
+```
 
-This is intentionally a beginner-friendly local mini-project. It uses Docker container isolation and per-user ownership checks, but it does not try to be a hardened multi-tenant CTF hosting platform.
+### Server
+
+```
+terminal:data
+terminal:error
+```
+
+---
+
+# 🔒 Security Features
+
+- JWT Authentication
+- Password Hashing (bcrypt)
+- Protected API Routes
+- Docker Container Isolation
+- CORS Protection
+- HTTPS Encryption
+- Environment Variables for Secrets
+
+---
+
+# 🚀 Deployment
+
+| Component | Platform |
+|-----------|----------|
+| Frontend | Vercel |
+| Backend | AWS EC2 (Docker) |
+| Reverse Proxy | Nginx |
+| HTTPS | Let's Encrypt |
+| Database | Neon PostgreSQL |
+
+---
+
+# 🔮 Future Improvements
+
+- Global Leaderboard
+- Admin Dashboard
+- User Profiles
+- More Linux Challenges
+- Kubernetes Deployment
+- GitHub Actions CI/CD
+- Redis Caching
+- Prometheus & Grafana Monitoring
+- Multiplayer Challenges
+
+---
+
+# 👨‍💻 Author
+
+**Gaurav Patil**
+
+Walchand College of Engineering, Sangli
+
+- GitHub: https://github.com/<your-username>
+- LinkedIn: https://linkedin.com/in/<your-profile>
+
+---
+
+## ⭐ If you found this project useful, consider giving it a star!
