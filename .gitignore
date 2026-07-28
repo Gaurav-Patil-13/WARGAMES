@@ -22,8 +22,8 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Runtime data and databases
-backend/data/
-data/
+# backend/data/
+# data/
 *.db
 *.db-shm
 *.db-wal

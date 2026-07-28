@@ -1,0 +1,122 @@
+export const levels = [
+  {
+    id: 1,
+    slug: 'basic-navigation',
+    title: 'Basic Navigation',
+    track: 'Linux',
+    xp: 100,
+    image: 'wargames-level-01',
+    objective: 'Learn pwd, ls, and cd. Find the real flag hidden in the training directory tree.',
+    hint: 'Start in /home/player. Use ls, cd, pwd, and cat. Ignore files that clearly say they are fake.',
+    walkthrough: 'Run pwd, list directories with ls, move into mission, then cat the final flag file.',
+    flag: 'WG{linux_navigation_unlocked}'
+  },
+  {
+    id: 2,
+    slug: 'hidden-files',
+    title: 'Hidden Files',
+    track: 'Linux',
+    xp: 120,
+    image: 'wargames-level-02',
+    objective: 'Discover hidden dotfiles and identify the only valid flag.',
+    hint: 'Hidden files start with a dot. Try ls -la in suspicious directories.',
+    walkthrough: 'Use ls -la to reveal .vault, then inspect the files inside it.',
+    flag: 'WG{dotfiles_are_not_invisible}'
+  },
+  {
+    id: 3,
+    slug: 'file-permissions',
+    title: 'File Permissions',
+    track: 'Linux',
+    xp: 140,
+    image: 'wargames-level-03',
+    objective: 'Use permissions to read a protected-looking file that belongs to your group.',
+    hint: 'Use ls -l. Group-readable files can be read when your user is in that group.',
+    walkthrough: 'Inspect permissions with ls -l /mission, then cat the readable group-owned flag.',
+    flag: 'WG{permissions_tell_the_story}'
+  },
+  {
+    id: 4,
+    slug: 'grep-find',
+    title: 'Grep And Find',
+    track: 'Linux',
+    xp: 160,
+    image: 'wargames-level-04',
+    objective: 'Search a noisy filesystem for a flag pattern.',
+    hint: 'find can locate files; grep -R can search file contents recursively.',
+    walkthrough: 'Run grep -R "WG{" /mission 2>/dev/null and inspect the matching result.',
+    flag: 'WG{grep_found_the_signal}'
+  },
+  {
+    id: 5,
+    slug: 'log-analysis',
+    title: 'Log Analysis',
+    track: 'Linux',
+    xp: 180,
+    image: 'wargames-level-05',
+    objective: 'Analyze log files to find the successful access event containing the flag.',
+    hint: 'Use grep for 200, success, token, or WG{.',
+    walkthrough: 'Search /var/log/training/access.log for the successful event and extract the flag.',
+    flag: 'WG{logs_remember_everything}'
+  },
+  {
+    id: 6,
+    slug: 'bash-script',
+    title: 'Simple Bash Script',
+    track: 'Bash',
+    xp: 220,
+    image: 'wargames-level-06',
+    objective: 'Write or run a short shell pipeline to decode the flag fragments.',
+    hint: 'cat, cut, sort, and tr are enough.',
+    walkthrough: 'Sort the fragments numerically, cut the second field, remove newlines, and read the flag.',
+    flag: 'WG{bash_pipelines_build_answers}'
+  },
+  {
+    id: 7,
+    slug: 'cronjob',
+    title: 'Cronjob Trail',
+    track: 'Bash',
+    xp: 240,
+    image: 'wargames-level-07',
+    objective: 'Inspect a scheduled task and follow the script it runs.',
+    hint: 'Look in /etc/cron.d and read referenced scripts.',
+    walkthrough: 'Read /etc/cron.d/backup-check, inspect /opt/jobs/backup-check.sh, then read its output file.',
+    flag: 'WG{cron_jobs_leave_clues}'
+  },
+  {
+    id: 8,
+    slug: 'container-inspection',
+    title: 'Container Inspection',
+    track: 'Docker',
+    xp: 280,
+    image: 'wargames-level-08',
+    objective: 'Use Docker-style metadata files to inspect container identity.',
+    hint: 'Real Docker socket access is not required. Inspect /metadata.',
+    walkthrough: 'Read /metadata/config.json and /metadata/labels to locate the training label flag.',
+    flag: 'WG{inspect_before_you_assume}'
+  },
+  {
+    id: 9,
+    slug: 'environment-secrets',
+    title: 'Environment Secrets',
+    track: 'Docker',
+    xp: 300,
+    image: 'wargames-level-09',
+    objective: 'Find a secret exposed through environment variables.',
+    hint: 'env and printenv show process environment variables.',
+    walkthrough: 'Run env or printenv, find TRAINING_FLAG, and submit its value.',
+    flag: 'WG{env_vars_can_leak_secrets}'
+  },
+  {
+    id: 10,
+    slug: 'service-discovery',
+    title: 'Service Discovery',
+    track: 'Networking',
+    xp: 350,
+    image: 'wargames-level-10',
+    objective: 'Discover a local service and fetch the flag it serves.',
+    hint: 'Use ss -lntp, then curl the local port you discover.',
+    walkthrough: 'Find the listening service on localhost:8088 with ss, then curl http://127.0.0.1:8088.',
+    flag: 'WG{services_speak_on_ports}'
+  }
+];
