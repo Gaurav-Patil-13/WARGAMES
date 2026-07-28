@@ -54,12 +54,15 @@ export async function createLevelContainer(userId, level) {
   await container.start();
 
   const db = await getDb();
-  await db.run(
-    'INSERT INTO containers (user_id, level_id, docker_id, status) VALUES (?, ?, ?, ?)',
-    userId,
-    level.id,
-    container.id,
-    'running'
+
+  await db.query(
+    'INSERT INTO containers (user_id, level_id, docker_id, status) VALUES ($1, $2, $3, $4)',
+    [
+      userId,
+      level.id,
+      container.id,
+      'running'
+    ]
   );
 
   return container;
@@ -81,11 +84,13 @@ export async function destroyContainer(userId, dockerId) {
     // Already removed.
   }
 
-  await db.run(
-    'UPDATE containers SET status = ?, destroyed_at = CURRENT_TIMESTAMP WHERE docker_id = ? AND user_id = ?',
-    'destroyed',
-    dockerId,
-    userId
+  await db.query(
+    'UPDATE containers SET status = $1, destroyed_at = CURRENT_TIMESTAMP WHERE docker_id = $2 AND user_id = $3',
+    [
+      'destroyed',
+      dockerId,
+      userId
+    ]
   );
 }
 

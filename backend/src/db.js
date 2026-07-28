@@ -1,7 +1,5 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
+import pkg from "pg";
+const { Pool } = pkg;
 import { env } from './config/env.js';
 import { levels } from './data/levels.js';
 
@@ -10,22 +8,26 @@ let db;
 export async function getDb() {
   if (db) return db;
 
-  fs.mkdirSync(path.dirname(env.databaseFile), { recursive: true });
-  db = await open({ filename: env.databaseFile, driver: sqlite3.Database });
-  await db.exec('PRAGMA foreign_keys = ON');
+  db = new Pool({
+    connectionString: env.databaseUrl,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  });
+
   await migrate();
   await seedLevels();
   return db;
 }
 
 async function migrate() {
-  await db.exec(`
+  await db.query(`
     CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       username TEXT NOT NULL UNIQUE,
       password_hash TEXT NOT NULL,
       xp INTEGER NOT NULL DEFAULT 0,
-      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
 
     CREATE TABLE IF NOT EXISTS levels (
@@ -46,20 +48,20 @@ async function migrate() {
       level_id INTEGER NOT NULL,
       completed INTEGER NOT NULL DEFAULT 0,
       attempts INTEGER NOT NULL DEFAULT 0,
-      completed_at TEXT,
+      completed_at TIMESTAMP,
       PRIMARY KEY (user_id, level_id),
       FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
       FOREIGN KEY(level_id) REFERENCES levels(id) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS containers (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       user_id INTEGER NOT NULL,
       level_id INTEGER NOT NULL,
       docker_id TEXT NOT NULL,
       status TEXT NOT NULL,
-      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      destroyed_at TEXT,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      destroyed_at TIMESTAMP,
       FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
       FOREIGN KEY(level_id) REFERENCES levels(id) ON DELETE CASCADE
     );
@@ -68,29 +70,31 @@ async function migrate() {
 
 async function seedLevels() {
   for (const level of levels) {
-    await db.run(
+    await db.query(
       `INSERT INTO levels (id, slug, title, track, xp, image, objective, hint, walkthrough, flag)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-       ON CONFLICT(id) DO UPDATE SET
-        slug=excluded.slug,
-        title=excluded.title,
-        track=excluded.track,
-        xp=excluded.xp,
-        image=excluded.image,
-        objective=excluded.objective,
-        hint=excluded.hint,
-        walkthrough=excluded.walkthrough,
-        flag=excluded.flag`,
-      level.id,
-      level.slug,
-      level.title,
-      level.track,
-      level.xp,
-      level.image,
-      level.objective,
-      level.hint,
-      level.walkthrough,
-      level.flag
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+       ON CONFLICT (id) DO UPDATE SET
+        slug = EXCLUDED.slug,
+        title = EXCLUDED.title,
+        track = EXCLUDED.track,
+        xp = EXCLUDED.xp,
+        image = EXCLUDED.image,
+        objective = EXCLUDED.objective,
+        hint = EXCLUDED.hint,
+        walkthrough = EXCLUDED.walkthrough,
+        flag = EXCLUDED.flag`,
+      [
+        level.id,
+        level.slug,
+        level.title,
+        level.track,
+        level.xp,
+        level.image,
+        level.objective,
+        level.hint,
+        level.walkthrough,
+        level.flag
+      ]
     );
   }
 }

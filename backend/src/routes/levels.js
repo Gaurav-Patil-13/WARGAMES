@@ -14,10 +14,13 @@ levelsRouter.get('/', async (req, res) => {
 levelsRouter.get('/:id', async (req, res) => {
   const levelId = Number(req.params.id);
   const db = await getDb();
-  const level = await db.get(
-    'SELECT id, slug, title, track, xp, image, objective, hint, walkthrough FROM levels WHERE id = ?',
-    levelId
+
+  const result = await db.query(
+    'SELECT id, slug, title, track, xp, image, objective, hint, walkthrough FROM levels WHERE id = $1',
+    [levelId]
   );
+
+  const level = result.rows[0];
 
   if (!level) return res.status(404).json({ error: 'Level not found' });
   if (!(await isLevelUnlocked(req.user.sub, levelId))) return res.status(403).json({ error: 'Level is locked' });
@@ -29,7 +32,13 @@ levelsRouter.post('/:id/submit', async (req, res) => {
   const levelId = Number(req.params.id);
   const submitted = String(req.body.flag || '').trim();
   const db = await getDb();
-  const level = await db.get('SELECT * FROM levels WHERE id = ?', levelId);
+
+  const levelResult = await db.query(
+    'SELECT * FROM levels WHERE id = $1',
+    [levelId]
+  );
+
+  const level = levelResult.rows[0];
 
   if (!level) return res.status(404).json({ error: 'Level not found' });
   if (!(await isLevelUnlocked(req.user.sub, levelId))) return res.status(403).json({ error: 'Level is locked' });
@@ -41,8 +50,15 @@ levelsRouter.post('/:id/submit', async (req, res) => {
   }
 
   await completeLevel(req.user.sub, levelId, level.xp);
+
   const updatedLevels = await listLevelsForUser(req.user.sub);
-  const user = await db.get('SELECT id, username, xp FROM users WHERE id = ?', req.user.sub);
+
+  const userResult = await db.query(
+    'SELECT id, username, xp FROM users WHERE id = $1',
+    [req.user.sub]
+  );
+
+  const user = userResult.rows[0];
 
   res.json({ ok: true, unlockedNext: levelId < 10, user, levels: updatedLevels });
 });

@@ -11,7 +11,13 @@ containersRouter.use(authenticate);
 containersRouter.post('/levels/:id/start', async (req, res) => {
   const levelId = Number(req.params.id);
   const db = await getDb();
-  const level = await db.get('SELECT * FROM levels WHERE id = ?', levelId);
+
+  const result = await db.query(
+    'SELECT * FROM levels WHERE id = $1',
+    [levelId]
+  );
+
+  const level = result.rows[0];
 
   if (!level) return res.status(404).json({ error: 'Level not found' });
   if (!(await isLevelUnlocked(req.user.sub, levelId))) return res.status(403).json({ error: 'Level is locked' });

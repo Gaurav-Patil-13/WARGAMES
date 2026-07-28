@@ -19,13 +19,17 @@ export function registerTerminalSocket(io) {
     socket.on('terminal:start', async ({ containerId }) => {
       try {
         const db = await getDb();
-        const row = await db.get
-(
-          'SELECT * FROM containers WHERE docker_id = ? AND user_id = ? AND status = ?',
-          containerId,
-          socket.user.sub,
-          'running'
+
+        const result = await db.query(
+          'SELECT * FROM containers WHERE docker_id = $1 AND user_id = $2 AND status = $3',
+          [
+            containerId,
+            socket.user.sub,
+            'running'
+          ]
         );
+
+        const row = result.rows[0];
 
         if (!row) {
           socket.emit('terminal:error', 'Container not found or not owned by user.');
