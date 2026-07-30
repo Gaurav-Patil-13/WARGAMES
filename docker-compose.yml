@@ -10,7 +10,7 @@ services:
     environment:
       # JWT_SECRET: ${JWT_SECRET:-dev-secret-change-me}
       PORT: 4000
-      CLIENT_URL: http://localhost:5173
+      CLIENT_URL: https://wargames-final.vercel.app
       # DATABASE_FILE: /app/data/wargames.db
       # DATABASE_URL: ${DATABASE_URL}
       DOCKER_SOCKET: /var/run/docker.sock
