@@ -8,7 +8,7 @@
 
 # 🛡️ WARGAMES - Browser-Based CTF Learning Platform
 
-A browser-based **Capture The Flag (CTF)** learning platform that helps users learn **Linux, Bash, Docker, Networking, and basic Cybersecurity** through hands-on interactive challenges.
+A browser-based **Capture The Flag (CTF)** learning platform that helps users learn **Linux, Bash, Docker, Networking ** through hands-on interactive challenges.
 
 Users can launch isolated Docker-based challenge environments, interact with a real Linux terminal directly in the browser, submit flags, earn XP, and progressively unlock new levels.
 
@@ -32,15 +32,21 @@ Users can launch isolated Docker-based challenge environments, interact with a r
 
 # 📸 Screenshots
 
-> Add screenshots here
+## 🏠 Landing Page
 
-| Login | Dashboard |
-|-------|-----------|
-| ![](screenshots/login.png) | ![](screenshots/dashboard.png) |
+![Landing Page](screenshots/landing-page.png)
 
-| Challenge Terminal |
-|--------------------|
-| ![](screenshots/terminal.png) |
+---
+
+## 📊 Dashboard
+
+![Dashboard](screenshots/dashboard.png)
+
+---
+
+## 💻 Live Challenge Terminal
+
+![Challenge Terminal](screenshots/challenge-completed.png)
 
 ---
 
@@ -79,7 +85,6 @@ Users can launch isolated Docker-based challenge environments, interact with a r
 - React.js
 - Vite
 - Tailwind CSS
-- Framer Motion
 - Axios
 - xterm.js
 - Socket.IO Client
@@ -89,7 +94,6 @@ Users can launch isolated Docker-based challenge environments, interact with a r
 - Node.js
 - Express.js
 - Socket.IO
-- Dockerode
 - JWT Authentication
 - bcrypt
 - PostgreSQL (`pg`)
@@ -104,7 +108,9 @@ Users can launch isolated Docker-based challenge environments, interact with a r
 - Docker Compose
 - AWS EC2
 - Nginx
-- Let's Encrypt
+
+## Tools
+
 - DuckDNS
 - Vercel
 - GitHub
@@ -198,84 +204,79 @@ When the user starts a level:
 
 # 📚 Challenge Levels
 
-| Level | Topic |
-|--------|--------------------------|
-| 1 | Linux Navigation |
-| 2 | Hidden Files |
-| 3 | File Permissions |
-| 4 | grep & find |
-| 5 | Log Analysis |
-| 6 | Bash Pipelines |
-| 7 | Cron Jobs |
-| 8 | Docker Inspection |
-| 9 | Environment Variables |
-| 10 | Port & Service Discovery |
+| Level | Topic | Flag |
+|:----:|------------------------|----------------------------------------|
+| 1 | Basic Navigation | `WG{linux_navigation_unlocked}` |
+| 2 | Hidden Files | `WG{dotfiles_are_not_invisible}` |
+| 3 | File Permissions | `WG{permissions_tell_the_story}` |
+| 4 | Grep & Find | `WG{grep_found_the_signal}` |
+| 5 | Log Analysis | `WG{logs_remember_everything}` |
+| 6 | Bash Pipelines | `WG{bash_pipelines_build_answers}` |
+| 7 | Cron Job Trail | `WG{cron_jobs_leave_clues}` |
+| 8 | Container Inspection | `WG{inspect_before_you_assume}` |
+| 9 | Environment Variables | `WG{env_vars_can_leak_secrets}` |
+| 10 | Port & Service Discovery | `WG{services_speak_on_ports}` |
 
 ---
 
+
 # ⚙️ Installation
 
-## Clone Repository
+## Prerequisites
+
+- Docker
+- Docker Compose
+- Git
+
+---
+
+## Clone the Repository
 
 ```bash
-git clone https://github.com/<your-username>/WARGAMES.git
+git clone https://github.com/Gaurav-Patil-13/WARGAMES.git
 cd WARGAMES
 ```
 
 ---
 
-## Backend Setup
+## Configure Environment Variables
 
-```bash
-cd backend
-npm install
-```
-
-Create `.env`
+Create a `.env` file in the project root:
 
 ```env
-PORT=4000
-
 JWT_SECRET=your-secret
-
 DATABASE_URL=postgresql://username:password@host/database?sslmode=require
-
 CLIENT_URL=http://localhost:5173
-
 DOCKER_SOCKET=/var/run/docker.sock
 ```
 
-Run backend
-
-```bash
-npm run dev
-```
-
 ---
 
-## Frontend Setup
+## Start the Application
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
----
-
-## Docker Setup
+Build and start all services:
 
 ```bash
 docker compose up --build
 ```
 
-Frontend
+To run in detached mode:
+
+```bash
+docker compose up -d --build
+```
+
+---
+
+## Access the Application
+
+Frontend:
 
 ```
 http://localhost:5173
 ```
 
-Backend
+Backend:
 
 ```
 http://localhost:4000
@@ -372,15 +373,6 @@ terminal:error
 
 ---
 
-# 👨‍💻 Author
 
-**Gaurav Patil**
-
-Walchand College of Engineering, Sangli
-
-- GitHub: https://github.com/<your-username>
-- LinkedIn: https://linkedin.com/in/<your-profile>
-
----
 
 ## ⭐ If you found this project useful, consider giving it a star!
