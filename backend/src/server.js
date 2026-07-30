@@ -14,14 +14,28 @@ await getDb();
 
 const app = express();
 const server = http.createServer(app);
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  env.clientUrl
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+};
+
 const io = new Server(server, {
-  cors: {
-    origin: env.clientUrl,
-    credentials: true
-  }
+  cors: corsOptions
 });
 
-app.use(cors({ origin: env.clientUrl, credentials: true }));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan('dev'));
 
